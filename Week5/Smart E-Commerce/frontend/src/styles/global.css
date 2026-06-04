@@ -1,0 +1,30 @@
+:root {
+  --primary: #00ff88;
+  --secondary: #ff0080;
+  --accent: #00d4ff;
+  --dark: #0a0e27;
+  --darker: #050812;
+  --card-bg: #131729;
+  --text: #ffffff;
+  --text-dim: #a0a8c0;
+  --error: #ff4444;
+  --success: #4caf50;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  background: var(--darker);
+  color: var(--text);
+  font-family: 'Rajdhani', sans-serif;
+}
+
+body {
+  background-color: var(--darker) !important;
+  color: var(--text) !important;
+}

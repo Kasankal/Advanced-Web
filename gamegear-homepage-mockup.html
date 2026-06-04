@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameGear Pro - Gaming Appliances Store</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #00ff88;
+            --secondary: #ff0080;
+            --accent: #00d4ff;
+            --dark: #0a0e27;
+            --darker: #050812;
+            --card-bg: #131729;
+            --text: #ffffff;
+            --text-dim: #a0a8c0;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: var(--darker);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(90deg, rgba(0, 255, 136, 0.03) 1px, transparent 1px),
+                linear-gradient(rgba(0, 255, 136, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: 0;
+            animation: gridScroll 20s linear infinite;
+        }
+
+        @keyframes gridScroll {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(50px); }
+        }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Navigation */
+        nav {
+            background: rgba(10, 14, 39, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid rgba(0, 255, 136, 0.2);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 30px rgba(0, 255, 136, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+        }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+        }
+
+        .logo::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), transparent);
+            animation: logoGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes logoGlow {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .search-bar {
+            flex: 1;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 0.9rem 3rem 0.9rem 1.2rem;
+            background: rgba(19, 23, 41, 0.8);
+            border: 2px solid rgba(0, 255, 136, 0.3);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 1rem;
+            font-family: 'Rajdhani', sans-serif;
+            transition: all 0.3s;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+        }
+
+        .search-bar::after {
+            content: '🔍';
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .icon-btn {
+            background: rgba(0, 255, 136, 0.1);
+            border: 2px solid rgba(0, 255, 136, 0.3);
+            color: var(--primary);
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .icon-btn:hover {
+            background: var(--primary);
+            color: var(--dark);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            text-align: center;
+            margin: 3rem 0;
+            position: relative;
+        }
+
+        .page-header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 4rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary), var(--accent), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 1rem;
+            animation: titleGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes titleGlow {
+            0%, 100% { filter: drop-shadow(0 0 10px rgba(0, 255, 136, 0.3)); }
+            50% { filter: drop-shadow(0 0 30px rgba(0, 255, 136, 0.6)); }
+        }
+
+        .breadcrumb {
+            color: var(--text-dim);
+            font-size: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--card-bg);
+            border: 2px solid rgba(0, 255, 136, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .sidebar h3 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--primary);
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .filter-group {
+            margin-bottom: 2rem;
+        }
+
+        .filter-group h4 {
+            color: var(--accent);
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .filter-option {
+            display: flex;
+            align-items: center;
+            padding: 0.6rem 0;
+            color: var(--text-dim);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1.05rem;
+        }
+
+        .filter-option:hover {
+            color: var(--primary);
+            padding-left: 10px;
+        }
+
+        .filter-option input[type="checkbox"] {
+            margin-right: 0.8rem;
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+        }
+
+        .price-range {
+            background: rgba(0, 255, 136, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            margin: 1rem 0;
+            text-align: center;
+            font-size: 1.1rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .clear-filters {
+            width: 100%;
+            padding: 0.8rem;
+            background: transparent;
+            border: 2px solid var(--secondary);
+            color: var(--secondary);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 1rem;
+            transition: all 0.3s;
+        }
+
+        .clear-filters:hover {
+            background: var(--secondary);
+            color: white;
+            box-shadow: 0 0 20px rgba(255, 0, 128, 0.4);
+        }
+
+        /* Products Section */
+        .products-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: var(--card-bg);
+            border-radius: 8px;
+            border: 2px solid rgba(0, 255, 136, 0.2);
+        }
+
+        .results-count {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .sort-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .sort-section select {
+            padding: 0.6rem 1.2rem;
+            background: var(--darker);
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            color: var(--text);
+            border-radius: 6px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .sort-section select:hover {
+            border-color: var(--accent);
+        }
+
+        /* Product Grid */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .product-card {
+            background: var(--card-bg);
+            border: 2px solid rgba(0, 255, 136, 0.2);
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.4s;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .product-card:hover::before {
+            left: 100%;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--primary);
+            box-shadow: 0 12px 40px rgba(0, 255, 136, 0.3);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 240px;
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 212, 255, 0.1));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-image::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+
+        .product-info {
+            padding: 1.5rem;
+        }
+
+        .product-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .product-rating {
+            color: var(--accent);
+            font-size: 0.95rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .product-price {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--primary);
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--secondary);
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 12px rgba(255, 0, 128, 0.4);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .product-card {
+            animation: fadeInUp 0.6s ease-out backwards;
+        }
+
+        .product-card:nth-child(1) { animation-delay: 0.1s; }
+        .product-card:nth-child(2) { animation-delay: 0.15s; }
+        .product-card:nth-child(3) { animation-delay: 0.2s; }
+        .product-card:nth-child(4) { animation-delay: 0.25s; }
+        .product-card:nth-child(5) { animation-delay: 0.3s; }
+        .product-card:nth-child(6) { animation-delay: 0.35s; }
+        .product-card:nth-child(7) { animation-delay: 0.4s; }
+        .product-card:nth-child(8) { animation-delay: 0.45s; }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    
+    <div class="content-wrapper">
+        <nav>
+            <div class="nav-container">
+                <div class="logo">GameGear Pro</div>
+                <div class="search-bar">
+                    <input type="text" placeholder="Search for gaming gear...">
+                </div>
+                <ul class="nav-links">
+                    <li><a href="#categories">Categories</a></li>
+                    <li><a href="#deals">Deals</a></li>
+                    <li><a href="#new">New Arrivals</a></li>
+                </ul>
+                <div class="nav-icons">
+                    <button class="icon-btn">Cart (0)</button>
+                    <button class="icon-btn">Account</button>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container">
+            <div class="page-header">
+                <h1>Level Up Your Game</h1>
+                <div class="breadcrumb">Home / Products / All Gaming Gear</div>
+            </div>
+
+            <div class="main-layout">
+                <!-- Sidebar Filters -->
+                <aside class="sidebar">
+                    <h3>Filters</h3>
+                    
+                    <div class="filter-group">
+                        <h4>Category</h4>
+                        <label class="filter-option">
+                            <input type="checkbox"> Mobile Gaming
+                        </label>
+                        <label class="filter-option">
+                            <input type="checkbox"> Consoles
+                        </label>
+                        <label class="filter-option">
+                            <input type="checkbox"> Controllers
+                        </label>
+                        <label class="filter-option">
+                            <input type="checkbox"> Headsets
+                        </label>
+                        <label class="filter-option">
+                            <input type="checkbox"> PC Gaming
+                        </label>
+                        <label class="filter-option">
+                            <input type="checkbox"> Accessories
+                        </label>
+                    </div>
+
+                    <div class="filter-group">
+                        <h4>Price Range</h4>
+                        <div class="price-range">$0 - $500</div>
+                    </div>
+
+                    <div class="filter-group">
+                        <h4>Brand</h4>
+                        <label class="filter-option">
+                            <input type="checkbox"> Razer
+                        </label>
+                        <label class="filter-option">
+                            <input type="checkbox"> Logitech
+                        </label>
+                        <label class="filter-option">
+                            <input type="checkbox"> SteelSeries
+                        </label>
+                        <label class="filter-option">
+                            <input type="checkbox"> HyperX
+                        </label>
+                    </div>
+
+                    <div class="filter-group">
+                        <h4>Rating</h4>
+                        <label class="filter-option">
+                            <input type="checkbox"> ★★★★★ & up
+                        </label>
+                        <label class="filter-option">
+                            <input type="checkbox"> ★★★★☆ & up
+                        </label>
+                        <label class="filter-option">
+                            <input type="checkbox"> ★★★☆☆ & up
+                        </label>
+                    </div>
+
+                    <button class="clear-filters">Clear All Filters</button>
+                </aside>
+
+                <!-- Products Section -->
+                <main>
+                    <div class="products-header">
+                        <div class="results-count">Showing 24 of 156 products</div>
+                        <div class="sort-section">
+                            <span style="color: var(--text-dim);">Sort by:</span>
+                            <select>
+                                <option>Relevance</option>
+                                <option>Price: Low to High</option>
+                                <option>Price: High to Low</option>
+                                <option>Top Rated</option>
+                                <option>Newest</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="product-grid">
+                        <!-- Product 1 -->
+                        <div class="product-card">
+                            <div class="badge">HOT</div>
+                            <div class="product-image">🎮</div>
+                            <div class="product-info">
+                                <div class="product-name">Pro Gaming Controller</div>
+                                <div class="product-rating">★★★★★ (342)</div>
+                                <div class="product-price">$89.99</div>
+                            </div>
+                        </div>
+
+                        <!-- Product 2 -->
+                        <div class="product-card">
+                            <div class="product-image">🎧</div>
+                            <div class="product-info">
+                                <div class="product-name">RGB Gaming Headset</div>
+                                <div class="product-rating">★★★★☆ (256)</div>
+                                <div class="product-price">$129.99</div>
+                            </div>
+                        </div>
+
+                        <!-- Product 3 -->
+                        <div class="product-card">
+                            <div class="badge">NEW</div>
+                            <div class="product-image">⌨️</div>
+                            <div class="product-info">
+                                <div class="product-name">Mechanical Gaming Keyboard</div>
+                                <div class="product-rating">★★★★★ (189)</div>
+                                <div class="product-price">$149.99</div>
+                            </div>
+                        </div>
+
+                        <!-- Product 4 -->
+                        <div class="product-card">
+                            <div class="product-image">🖱️</div>
+                            <div class="product-info">
+                                <div class="product-name">Ultra Precision Gaming Mouse</div>
+                                <div class="product-rating">★★★★★ (412)</div>
+                                <div class="product-price">$79.99</div>
+                            </div>
+                        </div>
+
+                        <!-- Product 5 -->
+                        <div class="product-card">
+                            <div class="product-image">📱</div>
+                            <div class="product-info">
+                                <div class="product-name">Mobile Gaming Triggers</div>
+                                <div class="product-rating">★★★★☆ (167)</div>
+                                <div class="product-price">$24.99</div>
+                            </div>
+                        </div>
+
+                        <!-- Product 6 -->
+                        <div class="product-card">
+                            <div class="badge">SALE</div>
+                            <div class="product-image">🖥️</div>
+                            <div class="product-info">
+                                <div class="product-name">144Hz Gaming Monitor</div>
+                                <div class="product-rating">★★★★★ (523)</div>
+                                <div class="product-price">$299.99</div>
+                            </div>
+                        </div>
+
+                        <!-- Product 7 -->
+                        <div class="product-card">
+                            <div class="product-image">🔌</div>
+                            <div class="product-info">
+                                <div class="product-name">Fast Charging Station</div>
+                                <div class="product-rating">★★★★☆ (98)</div>
+                                <div class="product-price">$39.99</div>
+                            </div>
+                        </div>
+
+                        <!-- Product 8 -->
+                        <div class="product-card">
+                            <div class="product-image">❄️</div>
+                            <div class="product-info">
+                                <div class="product-name">Phone Cooling Fan</div>
+                                <div class="product-rating">★★★★☆ (234)</div>
+                                <div class="product-price">$19.99</div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
