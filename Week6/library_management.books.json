@@ -1,0 +1,15 @@
+[{
+  "_id": {
+    "$oid": "6a323953c83f811dfc53e13d"
+  },
+  "bookId": "12345",
+  "title": "Book1",
+  "author": "Author1",
+  "category": "Fiction",
+  "isbn": "948",
+  "available": true,
+  "addedAt": {
+    "$date": "2026-06-17T06:06:11.381Z"
+  },
+  "__v": 0
+}]

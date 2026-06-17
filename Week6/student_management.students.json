@@ -1,0 +1,16 @@
+[{
+  "_id": {
+    "$oid": "6a32381b51bba368dfa5403c"
+  },
+  "studentId": "12345",
+  "firstName": "first1",
+  "lastName": "last1",
+  "email": "first1@email.com",
+  "course": "Computer Science",
+  "year": 2,
+  "gpa": 3.3,
+  "createdAt": {
+    "$date": "2026-06-17T06:00:59.226Z"
+  },
+  "__v": 0
+}]
