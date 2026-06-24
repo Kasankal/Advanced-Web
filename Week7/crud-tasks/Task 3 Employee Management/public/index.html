@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Employee Records Management</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Arial, sans-serif; background: #f0f2f5; }
+
+  /*Login */
+  #loginPage { display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+  .login-box { background: white; padding: 40px; border-radius: 10px; width: 360px; box-shadow: 0 4px 16px rgba(0,0,0,.15); }
+  .login-box h2 { text-align: center; margin-bottom: 8px; color: #1a252f; font-size: 22px; }
+  .login-box p { text-align: center; color: #666; font-size: 13px; margin-bottom: 24px; }
+  .login-box input { width: 100%; padding: 10px 12px; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 14px; font-size: 14px; }
+  .login-box button { width: 100%; padding: 11px; background: #1a252f; color: white; border: none; border-radius: 4px; font-size: 15px; font-weight: bold; cursor: pointer; }
+  .login-box button:hover { background: #2c3e50; }
+  .hint { text-align: center; font-size: 12px; color: #888; margin-top: 12px; }
+
+  /*Main App */
+  #app { display: none; }
+  .topbar { background: #1a252f; color: white; padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; }
+  .topbar h1 { font-size: 18px; }
+  .topbar .user-info { font-size: 13px; display: flex; align-items: center; gap: 14px; }
+  .btn-logout { background: #e74c3c; border: none; color: white; padding: 6px 14px; border-radius: 4px; cursor: pointer; font-size: 13px; }
+
+  .main { padding: 20px; }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; margin-bottom: 20px; }
+  .stat-card { background: white; padding: 16px; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,.1); text-align: center; }
+  .stat-card .num { font-size: 28px; font-weight: bold; }
+  .stat-card .lbl { font-size: 12px; color: #888; margin-top: 4px; }
+  .stat-active   .num { color: #27ae60; }
+  .stat-leave    .num { color: #f39c12; }
+  .stat-term     .num { color: #e74c3c; }
+  .stat-total    .num { color: #3498db; }
+
+  .layout { display: grid; grid-template-columns: 360px 1fr; gap: 20px; }
+  @media(max-width: 900px) { .layout { grid-template-columns: 1fr; } }
+  .card { background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 6px rgba(0,0,0,.1); }
+  h2 { font-size: 15px; margin-bottom: 14px; color: #1a252f; border-bottom: 2px solid #1a252f; padding-bottom: 8px; }
+  label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 3px; color: #555; }
+  input, select { width: 100%; padding: 8px 10px; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 10px; font-size: 13px; }
+  input:focus, select:focus { outline: none; border-color: #1a252f; }
+  .field-err { color: #e74c3c; font-size: 11px; margin-top: -8px; margin-bottom: 8px; }
+
+  .btn { padding: 9px 16px; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: bold; }
+  .btn-primary  { background: #1a252f; color: white; width: 100%; }
+  .btn-success  { background: #27ae60; color: white; width: 100%; margin-top: 6px; }
+  .btn-cancel   { background: #95a5a6; color: white; width: 100%; margin-top: 6px; }
+  .btn-edit     { background: #f39c12; color: white; padding: 4px 9px; font-size: 11px; }
+  .btn-delete   { background: #e74c3c; color: white; padding: 4px 9px; font-size: 11px; }
+  .btn:hover    { opacity: .88; }
+
+  .toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+  .toolbar input  { margin: 0; flex: 1; min-width: 160px; }
+  .toolbar select { margin: 0; width: 140px; }
+  .btn-search { background: #3498db; color: white; padding: 8px 14px; font-size: 13px; border: none; border-radius: 4px; cursor: pointer; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { background: #1a252f; color: white; padding: 9px 10px; text-align: left; }
+  td { padding: 8px 10px; border-bottom: 1px solid #eee; vertical-align: middle; }
+  tr:hover td { background: #f9f9f9; }
+
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 10px; font-weight: bold; }
+  .b-active    { background: #d4edda; color: #155724; }
+  .b-leave     { background: #fff3cd; color: #856404; }
+  .b-term      { background: #f8d7da; color: #721c24; }
+
+  .msg { padding: 10px; border-radius: 4px; margin-bottom: 12px; font-size: 13px; display: none; }
+  .msg.success { background: #d4edda; color: #155724; display: block; }
+  .msg.error   { background: #f8d7da; color: #721c24; display: block; }
+  #loginErr    { color: #e74c3c; font-size: 13px; margin-bottom: 10px; text-align: center; display: none; }
+  #editSection { display: none; margin-top: 16px; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN PAGE -->
+<div id="loginPage">
+  <div class="login-box">
+    <h2>👔 Employee Records</h2>
+    <p>Sign in to access the system</p>
+    <div id="loginErr"></div>
+    <input id="loginUser" placeholder="Username" onkeyup="if(event.key==='Enter') login()">
+    <input id="loginPass" type="password" placeholder="Password" onkeyup="if(event.key==='Enter') login()">
+    <button onclick="login()">Sign In</button>
+    <p class="hint">Default: admin / admin123</p>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app">
+  <div class="topbar">
+    <h1>👔 Employee Records Management System</h1>
+    <div class="user-info">
+      <span>Logged in as: <strong id="currentUser"></strong> (<span id="currentRole"></span>)</span>
+      <button class="btn-logout" onclick="logout()">Logout</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <!-- Stats -->
+    <div class="stats">
+      <div class="stat-card stat-total"><div class="num" id="sTotal">0</div><div class="lbl">Total Employees</div></div>
+      <div class="stat-card stat-active"><div class="num" id="sActive">0</div><div class="lbl">Active</div></div>
+      <div class="stat-card stat-leave"><div class="num" id="sLeave">0</div><div class="lbl">On Leave</div></div>
+      <div class="stat-card stat-term"><div class="num" id="sTerm">0</div><div class="lbl">Terminated</div></div>
+    </div>
+
+    <div class="layout">
+      <!-- FORM -->
+      <div>
+        <div class="card">
+          <h2>Register Employee</h2>
+          <div id="msg" class="msg"></div>
+          <label>Employee ID *</label>
+          <input id="empId" placeholder="EMP001">
+          <label>First Name *</label>
+          <input id="firstName" placeholder="Jane">
+          <label>Last Name *</label>
+          <input id="lastName" placeholder="Doe">
+          <label>Email *</label>
+          <input id="email" type="email" placeholder="jane@company.com">
+          <label>Phone</label>
+          <input id="phone" placeholder="+254 7XX XXX XXX">
+          <label>Department *</label>
+          <select id="department">
+            <option value="">-- Select --</option>
+            <option>IT</option><option>HR</option><option>Finance</option>
+            <option>Marketing</option><option>Operations</option>
+            <option>Sales</option><option>Engineering</option><option>Other</option>
+          </select>
+          <label>Position *</label>
+          <input id="position" placeholder="Software Engineer">
+          <label>Salary (KES)</label>
+          <input id="salary" type="number" placeholder="50000">
+          <label>Hire Date *</label>
+          <input id="hireDate" type="date">
+          <button class="btn btn-primary" onclick="addEmployee()"> Register Employee</button>
+        </div>
+
+        <div class="card" id="editSection">
+          <h2>Edit Employee</h2>
+          <input type="hidden" id="editId">
+          <label>First Name</label><input id="eFirstName">
+          <label>Last Name</label><input id="eLastName">
+          <label>Email</label><input id="eEmail" type="email">
+          <label>Phone</label><input id="ePhone">
+          <label>Department</label>
+          <select id="eDepartment">
+            <option>IT</option><option>HR</option><option>Finance</option>
+            <option>Marketing</option><option>Operations</option>
+            <option>Sales</option><option>Engineering</option><option>Other</option>
+          </select>
+          <label>Position</label><input id="ePosition">
+          <label>Salary</label><input id="eSalary" type="number">
+          <label>Status</label>
+          <select id="eStatus">
+            <option>Active</option><option>On Leave</option><option>Terminated</option>
+          </select>
+          <button class="btn btn-success" onclick="updateEmployee()"> Save Changes</button>
+          <button class="btn btn-cancel" onclick="cancelEdit()">Cancel</button>
+        </div>
+      </div>
+
+      <!-- TABLE -->
+      <div class="card">
+        <h2>Employee Records (<span id="count">0</span>)</h2>
+        <div class="toolbar">
+          <input id="searchInput" placeholder="Search by name, ID, email, position..." onkeyup="if(event.key==='Enter') searchEmployees()">
+          <select id="filterDept" onchange="searchEmployees()">
+            <option value="">All Departments</option>
+            <option>IT</option><option>HR</option><option>Finance</option>
+            <option>Marketing</option><option>Operations</option>
+            <option>Sales</option><option>Engineering</option><option>Other</option>
+          </select>
+          <select id="filterStatus" onchange="searchEmployees()">
+            <option value="">All Status</option>
+            <option>Active</option><option>On Leave</option><option>Terminated</option>
+          </select>
+          <button class="btn-search" onclick="searchEmployees()"> Search</button>
+        </div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead><tr><th>Emp ID</th><th>Name</th><th>Email</th><th>Dept</th><th>Position</th><th>Status</th><th>Hire Date</th><th>Actions</th></tr></thead>
+            <tbody id="empTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = '/api/employees';
+let allEmployees = [];
+
+// Auth
+async function checkSession() {
+  const res = await fetch('/api/auth/me');
+  const data = await res.json();
+  if (data.success) { showApp(data.username, data.role); }
+}
+
+async function login() {
+  const username = document.getElementById('loginUser').value.trim();
+  const password = document.getElementById('loginPass').value;
+  if (!username || !password) return showLoginErr('Enter username and password.');
+  const res = await fetch('/api/auth/login', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ username, password })
+  });
+  const data = await res.json();
+  if (data.success) { showApp(data.username, data.role); }
+  else showLoginErr(data.error);
+}
+
+function showLoginErr(msg) {
+  const el = document.getElementById('loginErr');
+  el.textContent = msg; el.style.display = 'block';
+}
+
+async function logout() {
+  await fetch('/api/auth/logout', { method: 'POST' });
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('loginPage').style.display = 'flex';
+  document.getElementById('loginUser').value = '';
+  document.getElementById('loginPass').value = '';
+  document.getElementById('loginErr').style.display = 'none';
+}
+
+function showApp(username, role) {
+  document.getElementById('loginPage').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('currentUser').textContent = username;
+  document.getElementById('currentRole').textContent = role;
+  loadEmployees();
+}
+
+// CRUD 
+function showMsg(text, type) {
+  const el = document.getElementById('msg');
+  el.textContent = text; el.className = 'msg ' + type;
+  setTimeout(() => el.style.display = 'none', 3500);
+}
+
+function validateEmail(email) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); }
+
+async function loadEmployees(search = '', dept = '', status = '') {
+  let url = API;
+  const p = new URLSearchParams();
+  if (search) p.append('search', search);
+  if (dept) p.append('department', dept);
+  if (status) p.append('status', status);
+  if (p.toString()) url += '?' + p;
+  const res = await fetch(url);
+  const { data, count } = await res.json();
+  allEmployees = data;
+  document.getElementById('count').textContent = count;
+  updateStats(data);
+  renderTable(data);
+}
+
+function updateStats(data) {
+  document.getElementById('sTotal').textContent = data.length;
+  document.getElementById('sActive').textContent = data.filter(e => e.status === 'Active').length;
+  document.getElementById('sLeave').textContent = data.filter(e => e.status === 'On Leave').length;
+  document.getElementById('sTerm').textContent = data.filter(e => e.status === 'Terminated').length;
+}
+
+function renderTable(data) {
+  const tbody = document.getElementById('empTable');
+  if (!data.length) { tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#888;padding:20px">No records found.</td></tr>'; return; }
+  tbody.innerHTML = data.map(e => {
+    const badgeClass = e.status === 'Active' ? 'b-active' : e.status === 'On Leave' ? 'b-leave' : 'b-term';
+    const hireDate = new Date(e.hireDate).toLocaleDateString('en-KE');
+    const eName = (e.firstName + ' ' + e.lastName).replace(/'/g, "\\'");
+    return `<tr>
+      <td><strong>${e.empId}</strong></td>
+      <td>${e.firstName} ${e.lastName}</td>
+      <td>${e.email}</td>
+      <td>${e.department}</td>
+      <td>${e.position}</td>
+      <td><span class="badge ${badgeClass}">${e.status}</span></td>
+      <td>${hireDate}</td>
+      <td>
+        <button class="btn btn-edit" onclick='openEdit(${JSON.stringify(e)})'>✏️ Edit</button>
+        <button class="btn btn-delete" onclick="deleteEmployee('${e._id}')">🗑️</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function searchEmployees() {
+  loadEmployees(
+    document.getElementById('searchInput').value,
+    document.getElementById('filterDept').value,
+    document.getElementById('filterStatus').value
+  );
+}
+
+async function addEmployee() {
+  const fields = {
+    empId:      document.getElementById('empId').value.trim(),
+    firstName:  document.getElementById('firstName').value.trim(),
+    lastName:   document.getElementById('lastName').value.trim(),
+    email:      document.getElementById('email').value.trim(),
+    phone:      document.getElementById('phone').value.trim(),
+    department: document.getElementById('department').value,
+    position:   document.getElementById('position').value.trim(),
+    salary:     parseFloat(document.getElementById('salary').value) || undefined,
+    hireDate:   document.getElementById('hireDate').value
+  };
+
+  // Validation
+  if (!fields.empId) return showMsg('Employee ID is required.', 'error');
+  if (!fields.firstName || !fields.lastName) return showMsg('First and Last name are required.', 'error');
+  if (!validateEmail(fields.email)) return showMsg('Enter a valid email address.', 'error');
+  if (!fields.department) return showMsg('Select a department.', 'error');
+  if (!fields.position) return showMsg('Position is required.', 'error');
+  if (!fields.hireDate) return showMsg('Hire date is required.', 'error');
+
+  const res = await fetch(API, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(fields) });
+  const data = await res.json();
+  if (data.success) { showMsg('Employee registered successfully!', 'success'); loadEmployees(); clearForm(); }
+  else showMsg(data.error, 'error');
+}
+
+function clearForm() {
+  ['empId','firstName','lastName','email','phone','position','salary','hireDate'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('department').value = '';
+}
+
+function openEdit(e) {
+  document.getElementById('editSection').style.display = 'block';
+  document.getElementById('editId').value = e._id;
+  document.getElementById('eFirstName').value = e.firstName;
+  document.getElementById('eLastName').value = e.lastName;
+  document.getElementById('eEmail').value = e.email;
+  document.getElementById('ePhone').value = e.phone || '';
+  document.getElementById('eDepartment').value = e.department;
+  document.getElementById('ePosition').value = e.position;
+  document.getElementById('eSalary').value = e.salary || '';
+  document.getElementById('eStatus').value = e.status;
+  document.getElementById('editSection').scrollIntoView({behavior:'smooth'});
+}
+
+async function updateEmployee() {
+  const id = document.getElementById('editId').value;
+  const email = document.getElementById('eEmail').value.trim();
+  if (!validateEmail(email)) return showMsg('Enter a valid email.', 'error');
+  const body = {
+    firstName:  document.getElementById('eFirstName').value.trim(),
+    lastName:   document.getElementById('eLastName').value.trim(),
+    email,
+    phone:      document.getElementById('ePhone').value.trim(),
+    department: document.getElementById('eDepartment').value,
+    position:   document.getElementById('ePosition').value.trim(),
+    salary:     parseFloat(document.getElementById('eSalary').value) || undefined,
+    status:     document.getElementById('eStatus').value
+  };
+  const res = await fetch(`${API}/${id}`, { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+  const data = await res.json();
+  if (data.success) { showMsg('Employee updated!', 'success'); cancelEdit(); loadEmployees(); }
+  else showMsg(data.error, 'error');
+}
+
+function cancelEdit() { document.getElementById('editSection').style.display = 'none'; }
+
+async function deleteEmployee(id) {
+  if (!confirm('Delete this employee record? This cannot be undone.')) return;
+  const res = await fetch(`${API}/${id}`, { method: 'DELETE' });
+  const data = await res.json();
+  if (data.success) { showMsg('Employee deleted.', 'success'); loadEmployees(); }
+  else showMsg(data.error, 'error');
+}
+
+checkSession();
+</script>
+</body>
+</html>

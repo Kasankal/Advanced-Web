@@ -1,0 +1,45 @@
+{
+  "name": "gamegear-pro-backend",
+  "version": "1.0.0",
+  "description": "GameGear Pro E-Commerce Backend - Gaming Appliances Store",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test": "jest --detectOpenHandles",
+    "test:watch": "jest --watch",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix"
+  },
+  "keywords": [
+    "e-commerce",
+    "gaming",
+    "mevn",
+    "express",
+    "mongodb"
+  ],
+  "author": "Fidel",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "connect-mongo": "^5.0.1",
+    "mongoose": "^7.5.0",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "jsonwebtoken": "^9.0.0",
+    "validator": "^13.11.0",
+    "helmet": "^7.0.0",
+    "express-rate-limit": "^6.7.0",
+    "compression": "^1.7.4",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  }
+}

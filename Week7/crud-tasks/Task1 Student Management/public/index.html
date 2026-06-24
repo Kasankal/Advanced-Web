@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Student Management System</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Arial, sans-serif; background: #f0f2f5; padding: 20px; }
+  h1 { background: #2c3e50; color: white; padding: 15px 20px; border-radius: 6px; margin-bottom: 20px; }
+  .container { display: grid; grid-template-columns: 380px 1fr; gap: 20px; }
+  .card { background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 6px rgba(0,0,0,.1); }
+  h2 { font-size: 16px; margin-bottom: 15px; color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 8px; }
+  label { display: block; font-size: 13px; font-weight: bold; margin-bottom: 4px; color: #555; }
+  input, select { width: 100%; padding: 8px 10px; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 12px; font-size: 14px; }
+  input:focus, select:focus { outline: none; border-color: #3498db; }
+  .btn { padding: 9px 18px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: bold; }
+  .btn-primary { background: #3498db; color: white; width: 100%; }
+  .btn-success { background: #27ae60; color: white; width: 100%; margin-top: 6px; }
+  .btn-edit   { background: #f39c12; color: white; padding: 5px 10px; font-size: 12px; }
+  .btn-delete { background: #e74c3c; color: white; padding: 5px 10px; font-size: 12px; }
+  .btn:hover { opacity: .88; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { background: #2c3e50; color: white; padding: 10px; text-align: left; }
+  td { padding: 9px 10px; border-bottom: 1px solid #eee; }
+  tr:hover td { background: #f9f9f9; }
+  .msg { padding: 10px; border-radius: 4px; margin-bottom: 12px; font-size: 13px; display: none; }
+  .msg.success { background: #d4edda; color: #155724; display: block; }
+  .msg.error   { background: #f8d7da; color: #721c24; display: block; }
+  #editSection { display: none; }
+</style>
+</head>
+<body>
+<h1> Student Management System</h1>
+<div class="container">
+  <!--Form -->
+  <div>
+    <div class="card">
+      <h2>Add New Student</h2>
+      <div id="msg" class="msg"></div>
+      <label>Student ID</label>
+      <input id="studentId" placeholder="e.g. STU001">
+      <label>First Name</label>
+      <input id="firstName" placeholder="John">
+      <label>Last Name</label>
+      <input id="lastName" placeholder="Doe">
+      <label>Email</label>
+      <input id="email" type="email" placeholder="john@university.ac.ke">
+      <label>Course</label>
+      <input id="course" placeholder="Computer Science">
+      <label>Year</label>
+      <select id="year">
+        <option value="1">Year 1</option>
+        <option value="2">Year 2</option>
+        <option value="3">Year 3</option>
+        <option value="4">Year 4</option>
+      </select>
+      <label>GPA (0–4)</label>
+      <input id="gpa" type="number" step="0.1" min="0" max="4" placeholder="3.5">
+      <button class="btn btn-primary" onclick="addStudent()"> Add Student</button>
+    </div>
+
+    <div class="card" id="editSection" style="margin-top:16px;">
+      <h2>Edit Student</h2>
+      <input type="hidden" id="editId">
+      <label>First Name</label>
+      <input id="eFirstName">
+      <label>Last Name</label>
+      <input id="eLastName">
+      <label>Email</label>
+      <input id="eEmail" type="email">
+      <label>Course</label>
+      <input id="eCourse">
+      <label>Year</label>
+      <select id="eYear">
+        <option value="1">Year 1</option><option value="2">Year 2</option>
+        <option value="3">Year 3</option><option value="4">Year 4</option>
+      </select>
+      <label>GPA</label>
+      <input id="eGpa" type="number" step="0.1" min="0" max="4">
+      <button class="btn btn-success" onclick="updateStudent()"> Save Changes</button>
+      <button class="btn btn-primary" onclick="cancelEdit()" style="margin-top:6px;background:#95a5a6;">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="card">
+    <h2>All Students (<span id="count">0</span>)</h2>
+    <table>
+      <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Course</th><th>Year</th><th>GPA</th><th>Actions</th></tr></thead>
+      <tbody id="studentTable"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+const API = '/api/students';
+
+function showMsg(text, type) {
+  const el = document.getElementById('msg');
+  el.textContent = text;
+  el.className = 'msg ' + type;
+  setTimeout(() => el.style.display = 'none', 3000);
+}
+
+async function loadStudents() {
+  const res = await fetch(API);
+  const { data, count } = await res.json();
+  document.getElementById('count').textContent = count;
+  const tbody = document.getElementById('studentTable');
+  tbody.innerHTML = data.map(s => `
+    <tr>
+      <td>${s.studentId}</td>
+      <td>${s.firstName} ${s.lastName}</td>
+      <td>${s.email}</td>
+      <td>${s.course}</td>
+      <td>Year ${s.year}</td>
+      <td>${s.gpa ?? '-'}</td>
+      <td>
+        <button class="btn btn-edit" onclick="openEdit('${s._id}','${s.firstName}','${s.lastName}','${s.email}','${s.course}',${s.year},${s.gpa??0})">✏️ Edit</button>
+        <button class="btn btn-delete" onclick="deleteStudent('${s._id}')">Delete</button>
+      </td>
+    </tr>`).join('');
+}
+
+async function addStudent() {
+  const body = {
+    studentId: document.getElementById('studentId').value.trim(),
+    firstName: document.getElementById('firstName').value.trim(),
+    lastName:  document.getElementById('lastName').value.trim(),
+    email:     document.getElementById('email').value.trim(),
+    course:    document.getElementById('course').value.trim(),
+    year:      parseInt(document.getElementById('year').value),
+    gpa:       parseFloat(document.getElementById('gpa').value) || undefined
+  };
+  if (!body.studentId || !body.firstName || !body.lastName || !body.email || !body.course) {
+    return showMsg('Please fill all required fields.', 'error');
+  }
+  const res = await fetch(API, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+  const data = await res.json();
+  if (data.success) { showMsg('Student added!', 'success'); loadStudents(); }
+  else showMsg(data.error, 'error');
+}
+
+function openEdit(id, fn, ln, email, course, year, gpa) {
+  document.getElementById('editSection').style.display = 'block';
+  document.getElementById('editId').value = id;
+  document.getElementById('eFirstName').value = fn;
+  document.getElementById('eLastName').value = ln;
+  document.getElementById('eEmail').value = email;
+  document.getElementById('eCourse').value = course;
+  document.getElementById('eYear').value = year;
+  document.getElementById('eGpa').value = gpa;
+  document.getElementById('editSection').scrollIntoView({behavior:'smooth'});
+}
+
+async function updateStudent() {
+  const id = document.getElementById('editId').value;
+  const body = {
+    firstName: document.getElementById('eFirstName').value.trim(),
+    lastName:  document.getElementById('eLastName').value.trim(),
+    email:     document.getElementById('eEmail').value.trim(),
+    course:    document.getElementById('eCourse').value.trim(),
+    year:      parseInt(document.getElementById('eYear').value),
+    gpa:       parseFloat(document.getElementById('eGpa').value)
+  };
+  const res = await fetch(`${API}/${id}`, { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+  const data = await res.json();
+  if (data.success) { showMsg('Student updated!', 'success'); cancelEdit(); loadStudents(); }
+  else showMsg(data.error, 'error');
+}
+
+function cancelEdit() { document.getElementById('editSection').style.display = 'none'; }
+
+async function deleteStudent(id) {
+  if (!confirm('Delete this student?')) return;
+  const res = await fetch(`${API}/${id}`, { method: 'DELETE' });
+  const data = await res.json();
+  if (data.success) { showMsg('Student deleted.', 'success'); loadStudents(); }
+  else showMsg(data.error, 'error');
+}
+
+loadStudents();
+</script>
+</body>
+</html>

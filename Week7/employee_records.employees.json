@@ -1,0 +1,21 @@
+[{
+  "_id": {
+    "$oid": "6a323ac78a5d5988e1d927b0"
+  },
+  "empId": "12345",
+  "firstName": "first1",
+  "lastName": "last1",
+  "email": "first1@email.com",
+  "phone": "0712345678",
+  "department": "Marketing",
+  "position": "Sales lead",
+  "salary": 70000,
+  "hireDate": {
+    "$date": "2020-06-03T00:00:00.000Z"
+  },
+  "status": "Active",
+  "createdAt": {
+    "$date": "2026-06-17T06:12:23.432Z"
+  },
+  "__v": 0
+}]
