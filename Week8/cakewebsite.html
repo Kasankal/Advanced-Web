@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cake Masters - Training & Supplies</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f9f9f9;
+        }
+
+        /* NAVIGATION - Mobile First */
+        nav {
+            background-color: #fff;
+            border-bottom: 1px solid #ddd;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #8b4513;
+        }
+
+        .hamburger {
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 5px;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background-color: #333;
+            transition: 0.3s;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(10px, 10px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        .nav-menu {
+            display: none;
+            position: absolute;
+            top: 60px;
+            left: 0;
+            right: 0;
+            background-color: #fff;
+            flex-direction: column;
+            width: 100%;
+            border-bottom: 1px solid #ddd;
+            z-index: 100;
+        }
+
+        .nav-menu.active {
+            display: flex;
+        }
+
+        .nav-menu a {
+            padding: 1rem;
+            text-decoration: none;
+            color: #333;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+
+        .nav-menu a:hover {
+            background-color: #f0e6d2;
+        }
+
+        /* TABLET AND UP - Navigation */
+        @media (min-width: 768px) {
+            .hamburger {
+                display: none;
+            }
+
+            .nav-menu {
+                display: flex;
+                position: static;
+                flex-direction: row;
+                width: auto;
+                border: none;
+                gap: 0;
+            }
+
+            .nav-menu a {
+                padding: 1rem 1.5rem;
+                border-bottom: none;
+                border-right: 1px solid #eee;
+            }
+
+            .nav-menu a:last-child {
+                border-right: none;
+            }
+        }
+
+        /* MAIN CONTENT */
+        main {
+            min-height: calc(100vh - 200px);
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* HERO SECTION - Mobile First */
+        .hero {
+            background-color: #fff5e6;
+            padding: 2rem 1rem;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 1.8rem;
+            color: #8b4513;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            color: #555;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background-color: #8b4513;
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+
+        .cta-button:hover {
+            background-color: #6b3410;
+        }
+
+        /* TABLET AND UP - Hero */
+        @media (min-width: 768px) {
+            .hero {
+                padding: 4rem 2rem;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.2rem;
+            }
+        }
+
+        /* DESKTOP - Hero */
+        @media (min-width: 1024px) {
+            .hero {
+                padding: 5rem 4rem;
+            }
+
+            .hero h1 {
+                font-size: 3rem;
+            }
+        }
+
+        /* CONTENT CONTAINER - Mobile First */
+        .container {
+            padding: 2rem 1rem;
+            max-width: 100%;
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                padding: 3rem 2rem;
+                max-width: 100%;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .container {
+                padding: 4rem 4rem;
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+        }
+
+        /* SECTION TITLES */
+        h2 {
+            font-size: 1.8rem;
+            color: #8b4513;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        @media (min-width: 768px) {
+            h2 {
+                font-size: 2.2rem;
+            }
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        /* PRODUCTS GRID - Mobile First (1 column) */
+        .products-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .product-card {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .product-price {
+            color: #8b4513;
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-top: 0.5rem;
+        }
+
+        /* TABLET - Products (2 columns) */
+        @media (min-width: 768px) {
+            .products-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2rem;
+            }
+        }
+
+        /* DESKTOP - Products (3 columns) */
+        @media (min-width: 1024px) {
+            .products-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 2rem;
+            }
+        }
+
+        /* SERVICES GRID - Mobile First (1 column) */
+        .services-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .service-card {
+            background-color: #fff;
+            border-left: 4px solid #8b4513;
+            padding: 1.5rem;
+        }
+
+        .service-duration {
+            color: #8b4513;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        /* TABLET - Services (2 columns) */
+        @media (min-width: 768px) {
+            .services-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2rem;
+            }
+        }
+
+        /* DESKTOP - Services (2 columns) */
+        @media (min-width: 1024px) {
+            .services-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2rem;
+            }
+        }
+
+        /* ABOUT SECTION - Flexbox Mobile First */
+        .about-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .about-text {
+            line-height: 1.8;
+            color: #555;
+        }
+
+        .about-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .stat-item {
+            background-color: #fff;
+            padding: 1.5rem;
+            border-left: 4px solid #8b4513;
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            color: #8b4513;
+            font-weight: bold;
+        }
+
+        /* TABLET AND UP - About */
+        @media (min-width: 768px) {
+            .about-content {
+                flex-direction: row;
+                gap: 3rem;
+            }
+
+            .about-text {
+                flex: 1;
+            }
+
+            .about-stats {
+                flex: 1;
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+            .stat-item {
+                flex: 0 1 calc(50% - 0.5rem);
+            }
+        }
+
+        /* CONTACT FORM - Mobile First */
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            font-size: 1rem;
+            font-family: Arial, sans-serif;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #8b4513;
+            background-color: #fffbf0;
+        }
+
+        /* TABLET - Contact Form */
+        @media (min-width: 768px) {
+            .contact-wrapper {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 3rem;
+            }
+
+            .contact-form {
+                grid-column: 1;
+            }
+
+            .contact-info {
+                grid-column: 2;
+            }
+
+            .form-row {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 1rem;
+            }
+
+            .form-row .form-group {
+                grid-column: span 1;
+            }
+
+            .form-row .form-group:last-child {
+                grid-column: 1 / -1;
+            }
+        }
+
+        /* DESKTOP - Contact Form */
+        @media (min-width: 1024px) {
+            .contact-wrapper {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .contact-info {
+            background-color: #fff;
+            padding: 2rem;
+            border: 1px solid #ddd;
+        }
+
+        .contact-info h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .contact-info h3:first-child {
+            margin-top: 0;
+        }
+
+        /* FOOTER - Flexbox Mobile First */
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 2rem 1rem;
+            text-align: center;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .footer-section {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .footer-section h4 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .footer-links a {
+            color: #ccc;
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            color: #fff;
+        }
+
+        /* TABLET - Footer */
+        @media (min-width: 768px) {
+            footer {
+                padding: 3rem 2rem;
+            }
+
+            .footer-content {
+                flex-direction: row;
+                justify-content: space-around;
+                align-items: flex-start;
+                text-align: left;
+            }
+
+            .footer-section {
+                flex: 1;
+                min-width: 150px;
+            }
+        }
+
+        /* DESKTOP - Footer */
+        @media (min-width: 1024px) {
+            footer {
+                padding: 3rem 4rem;
+            }
+
+            .footer-content {
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+        }
+
+        .footer-bottom {
+            text-align: center;
+            color: #999;
+            font-size: 0.9rem;
+            margin-top: 1.5rem;
+        }
+
+        /* RESPONSIVE HELPERS */
+        .visible-mobile {
+            display: block;
+        }
+
+        .visible-tablet-up {
+            display: none;
+        }
+
+        @media (min-width: 768px) {
+            .visible-mobile {
+                display: none;
+            }
+
+            .visible-tablet-up {
+                display: block;
+            }
+        }
+
+        /* DEVICE WIDTH INDICATOR - For Testing */
+        .device-indicator {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background-color: #333;
+            color: white;
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            z-index: 9999;
+            border-radius: 3px;
+        }
+
+        @media (min-width: 768px) {
+            .device-indicator::after {
+                content: " Tablet (768px+)";
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .device-indicator::after {
+                content: " Desktop (1024px+)";
+            }
+        }
+
+        @media (max-width: 767px) {
+            .device-indicator::after {
+                content: " Mobile (< 768px)";
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- NAVIGATION -->
+    <nav>
+        <div class="nav-brand">Cake Masters</div>
+        <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="nav-menu" id="navMenu">
+            <a onclick="showPage('home')">Home</a>
+            <a onclick="showPage('about')">About Us</a>
+            <a onclick="showPage('products')">Products</a>
+            <a onclick="showPage('training')">Training</a>
+            <a onclick="showPage('contact')">Contact</a>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main>
+        <!-- HOME PAGE -->
+        <div id="home" class="page active">
+            <section class="hero">
+                <h1>Welcome to Cake Masters</h1>
+                <p>Your complete destination for professional cake training and premium baking supplies</p>
+                <button class="cta-button" onclick="showPage('products')">Browse Products</button>
+            </section>
+
+            <section class="container">
+                <h2>Why Choose Us</h2>
+                <div style="display: grid; grid-template-columns: 1fr; gap: 2rem;">
+                    <div style="background-color: #fff; padding: 2rem; border: 1px solid #ddd;">
+                        <h3>Expert Instructors</h3>
+                        <p>Learn from experienced pastry chefs with decades of combined experience.</p>
+                    </div>
+                    <div style="background-color: #fff; padding: 2rem; border: 1px solid #ddd;">
+                        <h3>Quality Supplies</h3>
+                        <p>Premium ingredients and tools sourced from trusted international suppliers.</p>
+                    </div>
+                    <div style="background-color: #fff; padding: 2rem; border: 1px solid #ddd;">
+                        <h3>Flexible Learning</h3>
+                        <p>Beginner to advanced courses tailored to your skill level and schedule.</p>
+                    </div>
+                </div>
+            </section>
+
+            @media (min-width: 768px) {
+                .why-us {
+                    display: grid;
+                    grid-template-columns: repeat(3, 1fr);
+                }
+            }
+        </div>
+
+        <!-- ABOUT PAGE -->
+        <div id="about" class="page">
+            <section class="container">
+                <h2>About Us</h2>
+                <div class="about-content">
+                    <div class="about-text">
+                        <p>Founded in 2015, Cake Masters has been serving the baking community with excellence. We believe that anyone can learn the art of cake making with proper guidance and quality materials.</p>
+                        <p style="margin-top: 1rem;">Our mission is to provide accessible, high-quality cake training and supplies that inspire creativity and confidence in bakers of all levels. Whether you're a home baker or aspiring professional, we're here to support your journey.</p>
+                    </div>
+                    <div class="about-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">5000+</div>
+                            <div>Students Trained</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">150+</div>
+                            <div>Products Available</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">98%</div>
+                            <div>Customer Satisfaction</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">12+</div>
+                            <div>Years of Service</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- PRODUCTS PAGE -->
+        <div id="products" class="page">
+            <section class="container">
+                <h2>Our Products</h2>
+                <div class="products-grid">
+                    <div class="product-card">
+                        <h3>Piping Bags Set</h3>
+                        <p>Professional reusable piping bags with assorted nozzles</p>
+                        <div class="product-price">$24.99</div>
+                    </div>
+                    <div class="product-card">
+                        <h3>Cake Decorating Kit</h3>
+                        <p>Complete kit with spatulas, scrapers, and levelers</p>
+                        <div class="product-price">$34.99</div>
+                    </div>
+                    <div class="product-card">
+                        <h3>Fondant Smoothers</h3>
+                        <p>Durable plastic smoothing tools for perfect finishes</p>
+                        <div class="product-price">$12.99</div>
+                    </div>
+                    <div class="product-card">
+                        <h3>Turntable Stand</h3>
+                        <p>Heavy-duty rotating turntable for cake decorating</p>
+                        <div class="product-price">$45.99</div>
+                    </div>
+                    <div class="product-card">
+                        <h3>Cake Leveler</h3>
+                        <p>Adjustable wire leveler for perfect cake layers</p>
+                        <div class="product-price">$18.99</div>
+                    </div>
+                    <div class="product-card">
+                        <h3>Edible Flowers Set</h3>
+                        <p>Assorted freeze-dried edible flowers for decorations</p>
+                        <div class="product-price">$19.99</div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- TRAINING PAGE -->
+        <div id="training" class="page">
+            <section class="container">
+                <h2>Training Services</h2>
+                <div class="services-grid">
+                    <div class="service-card">
+                        <h3>Beginner Basics</h3>
+                        <p class="service-duration">4 weeks | 2 hours/week</p>
+                        <p>Learn fundamental cake baking techniques, mixing methods, and basic decoration skills.</p>
+                        <button class="cta-button" style="margin-top: 1rem;" onclick="showPage('contact')">Enroll Now</button>
+                    </div>
+                    <div class="service-card">
+                        <h3>Intermediate Artistry</h3>
+                        <p class="service-duration">6 weeks | 3 hours/week</p>
+                        <p>Master advanced piping techniques, color theory, and complex design creation.</p>
+                        <button class="cta-button" style="margin-top: 1rem;" onclick="showPage('contact')">Enroll Now</button>
+                    </div>
+                    <div class="service-card">
+                        <h3>Advanced Professional</h3>
+                        <p class="service-duration">8 weeks | 4 hours/week</p>
+                        <p>Professional-level training for cake artists including business fundamentals and portfolio building.</p>
+                        <button class="cta-button" style="margin-top: 1rem;" onclick="showPage('contact')">Enroll Now</button>
+                    </div>
+                    <div class="service-card">
+                        <h3>Private Sessions</h3>
+                        <p class="service-duration">1-4 weeks | Custom hours</p>
+                        <p>One-on-one personalized instruction tailored to your specific goals and schedule.</p>
+                        <button class="cta-button" style="margin-top: 1rem;" onclick="showPage('contact')">Book Session</button>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- CONTACT PAGE -->
+        <div id="contact" class="page">
+            <section class="container">
+                <h2>Get In Touch</h2>
+                <div class="contact-wrapper">
+                    <form class="contact-form" onsubmit="return handleSubmit(event)">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="name">Full Name</label>
+                                <input type="text" id="name" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" name="email" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="phone">Phone</label>
+                                <input type="tel" id="phone" name="phone">
+                            </div>
+                            <div class="form-group">
+                                <label for="service">Interest</label>
+                                <select id="service" name="service">
+                                    <option>Select a service</option>
+                                    <option>Beginner Basics</option>
+                                    <option>Intermediate Artistry</option>
+                                    <option>Advanced Professional</option>
+                                    <option>Private Sessions</option>
+                                    <option>Product Inquiry</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="message">Message</label>
+                                <textarea id="message" name="message" required></textarea>
+                            </div>
+                        </div>
+                        <button type="submit" class="cta-button">Send Message</button>
+                    </form>
+                    <div class="contact-info">
+                        <h3>Contact Information</h3>
+                        <p>Get in touch with us through any of the following methods:</p>
+                        
+                        <h3>Email</h3>
+                        <p>info@cakemasters.com</p>
+                        
+                        <h3>Phone</h3>
+                        <p>+1 (555) 123-4567</p>
+                        
+                        <h3>Address</h3>
+                        <p>123 Baking Street<br>Culinary District<br>City, State 12345</p>
+                        
+                        <h3>Hours</h3>
+                        <p>Monday - Friday: 9:00 AM - 6:00 PM<br>Saturday: 10:00 AM - 4:00 PM<br>Sunday: Closed</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Cake Masters</h4>
+                <p>Professional cake training and supplies</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <div class="footer-links">
+                    <a onclick="showPage('home')">Home</a>
+                    <a onclick="showPage('about')">About Us</a>
+                    <a onclick="showPage('products')">Products</a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>Services</h4>
+                <div class="footer-links">
+                    <a onclick="showPage('training')">Training Courses</a>
+                    <a onclick="showPage('contact')">Contact Us</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Cake Masters. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- DEVICE INDICATOR FOR TESTING -->
+    <div class="device-indicator"></div>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        // Mobile menu toggle
+        const hamburger = document.getElementById('hamburger');
+        const navMenu = document.getElementById('navMenu');
+
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+
+        // Close menu when link is clicked
+        const navLinks = navMenu.querySelectorAll('a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+            });
+        });
+
+        // Page navigation
+        function showPage(pageId) {
+            // Hide all pages
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => page.classList.remove('active'));
+
+            // Show selected page
+            document.getElementById(pageId).classList.add('active');
+
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        // Form submission
+        function handleSubmit(event) {
+            event.preventDefault();
+            alert('Thank you for your message! We will get back to you soon.');
+            event.target.reset();
+            return false;
+        }
+
+        // Log current viewport width on resize for testing
+        window.addEventListener('resize', () => {
+            console.log('Viewport width:', window.innerWidth);
+        });
+
+        console.log('Initial viewport width:', window.innerWidth);
+    </script>
+</body>
+</html>
